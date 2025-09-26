@@ -9,9 +9,11 @@ Features
 **Multiple Diversity Metrics**
 
 - **Representation Distance-Based**: Using molecular fingerprints (Morgan, RDKit) and similarity metrics (Tanimoto coefficient)
-- **String-Based Analysis**: N-gram analysis of SMILES representations for sequence-level diversity assessment
+- **String-Based Analysis**: N-gram analysis of SMILES representations for sequence-level diversity assessment  
 - **Fragment-Based Metrics**: Systematic molecular decomposition using BRICS fragmentation and frequency analysis
-- **Scaffold-Based Methods**: Core molecular framework comparison after side-chain removal
+- **Scaffold-Based Methods**: Bemis-Murcko scaffold analysis for core molecular framework comparison
+- **Ring System Analysis**: Identification and analysis of ring systems and their sizes
+- **Functional Group Analysis**: Detection and diversity assessment of functional groups
 
 **Real-Time Monitoring & Visualization**
 
@@ -64,7 +66,7 @@ To install NaviDiv, follow these steps:
 
      .. code-block:: bash
 
-        conda install pytorch==2.5.0 torchvision==0.20.0 torchaudio==2.5.0 pytorch-cuda=12.4 -c pytorch -c nvidia
+        conda install pytorch==2.8.0 torchvision==0.23.0 torchaudio==2.8.0 pytorch-cuda=12.4 -c pytorch -c nvidia
 
      Then install REINVENT4 and NaviDiv with full dependencies:
 
@@ -99,35 +101,38 @@ Launch the Streamlit dashboard for comprehensive diversity analysis:
 
 .. code-block:: python
 
-   from navidiv.diversity import DiversityAnalyzer
+   from navidiv.diversity.diversity import diversity_all
    from rdkit import Chem
    
-   # Initialize analyzer
-   analyzer = DiversityAnalyzer()
+   # Load SMILES strings
+   smiles_list = ["CCO", "CCN", "CCC"]  # Your SMILES data
    
-   # Load molecules
-   molecules = [Chem.MolFromSmiles(smi) for smi in smiles_list]
+   # Calculate various diversity metrics
+   richness = diversity_all(smiles=smiles_list, mode="Richness")
+   internal_diversity = diversity_all(smiles=smiles_list, mode="IntDiv")
+   scaffold_diversity = diversity_all(smiles=smiles_list, mode="BM")
    
-   # Analyze diversity metrics
-   results = analyzer.analyze_diversity(molecules)
-   
-   # Generate visualization
-   analyzer.plot_diversity_evolution(results, output_path="diversity_plot.png")
+   # Analyze functional groups and ring systems
+   functional_groups = diversity_all(smiles=smiles_list, mode="FG")
+   ring_systems = diversity_all(smiles=smiles_list, mode="RS")
 
 **Integration with REINVENT4**
 
 .. code-block:: python
 
-   from navidiv.reinvent_integration import NaviDivScorer
+   from navidiv.reinvent.run_staged_learning_2 import run_staged_learning
+   from navidiv.reinvent.InputGenerator import InputGenerator
+   from omegaconf import DictConfig
    
-   # Initialize diversity scorer
-   scorer = NaviDivScorer(
-       fragment_threshold=0.1,
-       similarity_threshold=0.7
-   )
+   # Create configuration
+   cfg = DictConfig({...})  # Your REINVENT config
    
-   # Use in REINVENT4 scoring function
-   scores = scorer.calculate_diversity_penalties(molecules)
+   # Generate input files with diversity filters
+   input_generator = InputGenerator(cfg)
+   input_generator.generate_input()
+   
+   # Run staged learning with diversity constraints
+   run_staged_learning(cfg)
 
 Use Cases
 ---------
@@ -161,7 +166,7 @@ If you use NaviDiv in your research, please cite:
 
    Comming soon
 
-**Data Availability**: The framework is freely available on GitHub and archived on Zenodo (DOI: https://zenodo.org/records/16901533).
+**Data Availability**: The framework is freely available on GitHub at https://github.com/mohammedazzouzi15/Navi_diversity.
 
 Documentation
 -------------

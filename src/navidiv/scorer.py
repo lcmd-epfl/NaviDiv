@@ -1,6 +1,5 @@
-
 import logging
-import time  
+import time
 from collections import Counter
 from typing import Any
 
@@ -15,7 +14,7 @@ logger = logging.getLogger(__name__)
 
 class BaseScore:
     """Handles fragment scoring and analysis for molecular datasets."""
-    
+
     # Constants
     DEFAULT_MIN_COUNT_FRAGMENTS = 3
     DEFAULT_OVERREP_MIN_PERC = 20
@@ -52,27 +51,27 @@ class BaseScore:
         return f"{self._output_path}/{self._csv_name}_{filename_suffix}.csv"
 
     def _save_to_csv(
-        self, 
-        dataframe: pd.DataFrame, 
-        filename_suffix: str, 
-        append: bool = True
+        self,
+        dataframe: pd.DataFrame,
+        filename_suffix: str,
+        append: bool = True,
     ) -> None:
         """Save DataFrame to CSV with consistent formatting."""
         if not self._output_path:
             return
-            
+
         filepath = self._get_output_path(filename_suffix)
         try:
             dataframe.to_csv(
                 filepath,
                 index=False,
                 mode="a" if append else "w",
-                header=not pd.io.common.file_exists(filepath) if append else True,
+                header=not pd.io.common.file_exists(filepath)
+                if append
+                else True,
             )
         except OSError:
-            logger.exception(
-                "Error saving CSV file: %s", filepath
-            )
+            logger.exception("Error saving CSV file: %s", filepath)
 
     def _validate_fragments_df(self) -> None:
         """Validate that fragments DataFrame is initialized."""
@@ -203,23 +202,23 @@ class BaseScore:
                 smiles_with_fragment,
             ]
 
-        self._fragments_df = self._fragments_df[
+        fragments_df = self._fragments_df[
             self._fragments_df["Count"] > self._min_count_fragments
         ]  # select fragments with count greater than min_count_fragments
-        if self._fragments_df.shape[0] == 0:
+        if fragments_df.shape[0] == 0:
             logger.warning(
                 "No fragments found with count greater than %d",
                 self._min_count_fragments,
             )
-            return self._fragments_df
-        self._fragments_df[
+            return fragments_df
+        fragments_df[
             [
                 "median_score",
                 "median_score_fragment",
                 "median_score_not_fragment",
                 "molecules_with_fragment",
             ]
-        ] = self._fragments_df.apply(
+        ] = fragments_df.apply(
             lambda row: pd.Series(
                 process_fragment(
                     row["Substructure"],
@@ -231,21 +230,21 @@ class BaseScore:
         )
         if self.add_num_atoms:
             num_atoms = []
-            for substructure in self._fragments_df["Substructure"]:
+            for substructure in fragments_df["Substructure"]:
                 mol = Chem.MolFromSmarts(substructure)
                 if mol is not None:
                     num_atoms.append(mol.GetNumAtoms())
                 else:
                     num_atoms.append(0)
-            self._fragments_df["num_atoms"] = num_atoms
-        self._fragments_df["diff_median_score"] = (
-            self._fragments_df["median_score_fragment"]
-            - self._fragments_df["median_score_not_fragment"]
+            fragments_df["num_atoms"] = num_atoms
+        fragments_df["diff_median_score"] = (
+            fragments_df["median_score_fragment"]
+            - fragments_df["median_score_not_fragment"]
         )
         # if file exists, append to it
         for col, value in additional_columns_df.items():
-            self._fragments_df[col] = value
-        self._fragments_df.to_csv(
+            fragments_df[col] = value
+        fragments_df.to_csv(
             f"{self._output_path}/{self._csv_name}_with_score.csv",
             index=False,
             mode="a",
@@ -253,7 +252,7 @@ class BaseScore:
                 f"{self._output_path}/{self._csv_name}_with_score.csv"
             ),
         )
-        return self._fragments_df
+        return fragments_df
 
     def plot_count_histogram(
         self,
@@ -320,31 +319,32 @@ class BaseScore:
 
         start_time = time.time()
         self.get_count(smiles_list)
-        time_to_get_count = time.time()
-        logger.info(
-            "Time to get count: %.2f seconds",
-            time_to_get_count - start_time
-        )
+        time_to_get_count = time.time() - start_time
+        logger.info("Time to get count: %.2f seconds", time_to_get_count)
         unique_fragments = self._fragments_df["Substructure"].to_list()
-        self.add_score_metrics(smiles_list, scores, additional_columns_df)
-        
+
         unicity_ratio = (
-            0.0 if self.total_number_of_fragments == 0
+            0.0
+            if self.total_number_of_fragments == 0
             else len(unique_fragments) / self.total_number_of_fragments * 100
         )
-        
+        self.add_score_metrics(smiles_list, scores, additional_columns_df)
+
         for col, value in additional_columns_df.items():
             self._fragments_df[col] = value
-            
+
+        elapsed_time = time.time() - start_time
+
         dict_results = {
             "Percentage of Unique Fragments": unicity_ratio,
             "Total Number of Fragments": self.total_number_of_fragments,
             "Number of Unique Fragments": len(unique_fragments),
             "Unique Fragments": unique_fragments,
+            "Elapsed Time": elapsed_time,
+            "Elapsed Time_to get count": time_to_get_count,
         }
         dict_results = {**dict_results, **self.additional_metrics()}
-        
-        elapsed_time = time.time() - time_to_get_count
+
         logger.info(
             "Time to get added score metrics: %.2f seconds", elapsed_time
         )
@@ -367,6 +367,9 @@ class BaseScore:
                 "Count": list(ngrams_counter.values()),
             }
         )
+        # ngrams_df = ngrams_df[
+        #     ngrams_df["Count"] > self._min_count_fragments
+        # ]  # select fragments with count greater than min_count_fragments
         ngrams_df["Count ratio"] = (
             ngrams_df["Count"] / total_number_of_ngrams
         ) * 100
