@@ -25,22 +25,48 @@ class model_params_chemprop:
         self.scoring_function = cfg.scoring_function[id]
 
 
+class model_params_rdkit_physchem:
+    def __init__(self, cfg, id):
+        self.property_name = cfg.params_list[id]
+        self.lower_bound = cfg.lower_bound[id]
+        self.upper_bound = cfg.higher_bound[id]
+        self.weight = cfg.weight[id]
+
+
 class InputGenerator:
     def __init__(self, cfg: DictConfig):
         self.cfg = cfg
         self.wd = cfg.wd + "/" + cfg.name
         Path(self.wd).mkdir(parents=True, exist_ok=True)
-        if "model_params" in cfg.stage_comp:
-            self.list_of_properties = cfg.stage_comp.model_params.params_list
-            self.check_list_length()
-        else:
-            self.list_of_properties = []
-        if "model_params_chemprop" in cfg.stage_comp:
-            self.list_of_properties_chemprop = (
-                cfg.stage_comp.model_params_chemprop.params_list
-            )
-        else:
-            self.list_of_properties_chemprop = []
+        self.components = {}
+        for stage_comp, comp_length in cfg.stage_comp.items():
+            self.components[stage_comp] = len(comp_length.params_list)
+
+        self._component_handlers = {
+            "model_params_formed": self.add_stage_component_formed,
+            "model_params_rdkit_physchem": self.add_stage_component_rdkit_physchem,
+            "model_params_chemprop": self.add_stage_component_chemprop,
+        }
+
+    def _generate_staged_components(self, stage1_parameters):
+        for component in self.components:
+            handler = self._component_handlers.get(component)
+            if handler:
+                stage1_parameters = handler(stage1_parameters, component)
+            else:
+                # Log warning for unknown component
+                import logging
+
+                logging.warning(f"No handler found for component: {component}")
+        return stage1_parameters
+
+    def add_component_handler(self, component_name: str, handler_method):
+        """Add a new component handler dynamically."""
+        self._component_handlers[component_name] = handler_method
+
+    def remove_component_handler(self, component_name: str):
+        """Remove a component handler."""
+        self._component_handlers.pop(component_name, None)
 
     def run(self):
         os.chdir(self.wd)
@@ -49,13 +75,63 @@ class InputGenerator:
             ["reinvent", "-l", "stage1.log", "stage1.toml"], check=False
         )
 
-    def generate_input(self):
-        stage1_parameters = self.get_reinvent_sampling_config()
-        for i in range(len(self.list_of_properties)):
+    def add_stage_component_rdkit_physchem(self, stage1_parameters, component):
+        def _add_stage_component_rdkit_physchem(
+            stage_parameters, dict_config
+        ):  # stage.scoring.component.FairChemG
+            component_parameters = f"""
+        [[stage.scoring.component]]
+
+        [[stage.scoring.component.{dict_config.property_name}.endpoint]] 
+        name = "{dict_config.property_name}"
+        weight = {dict_config.weight}
+
+
+        params.property_name = "{dict_config.property_name}"
+        params.lower_bound = {dict_config.lower_bound}
+        params.upper_bound = {dict_config.upper_bound}
+            """
+            return stage_parameters + component_parameters
+
+        for i in range(self.components[component]):
+            dict_config = model_params_rdkit_physchem(
+                self.cfg.stage_comp.model_params_rdkit_physchem, i
+            )
+            stage1_parameters = _add_stage_component_rdkit_physchem(
+                stage1_parameters,
+                dict_config=dict_config,
+            )
+        return stage1_parameters
+
+    def add_stage_component_formed(self, stage1_parameters, component):
+        def _add_stage_component_formed(
+            stage_parameters, first_time, last_time, dict_config
+        ):  # stage.scoring.component.FairChemG
+            component_parameters = f"""
+            [[stage.scoring.component]]
+
+            [[stage.scoring.component.{dict_config.scoring_function}.endpoint]] 
+            name = "FairChem_{dict_config.property_name}"
+            weight = 0.6
+
+
+            params.property_name = "{dict_config.property_name}"
+            params.model = "{dict_config.model_name}"
+            params.lower_bound = {dict_config.lower_bound}
+            params.upper_bound = {dict_config.upper_bound}
+            params.model_dir = "{dict_config.model_dir}"
+            params.first_time = {first_time}
+            params.last_time = {last_time}
+
+
+                """
+            return stage_parameters + component_parameters
+
+        for i in range(self.components[component]):
             dict_config = model_params(
                 self.cfg.stage_comp.model_params_FORMOR_PROP, i
             )
-            stage1_parameters = self.add_stage_component(
+            stage1_parameters = _add_stage_component_formed(
                 stage1_parameters,
                 first_time="true" if i == 0 else "false",
                 last_time="true"
@@ -63,19 +139,41 @@ class InputGenerator:
                 else "false",
                 dict_config=dict_config,
             )
-        for i in range(len(self.list_of_properties_chemprop)):
+        return stage1_parameters
+
+    def add_stage_component_chemprop(self, stage1_parameters, component):
+        def _add_chempropFormed(
+            stage_parameters,
+            dict_config,
+        ):
+            component_parameters = f"""
+    [[stage.scoring.component]]
+
+    [[stage.scoring.component.{dict_config.scoring_function}.endpoint]] 
+    name = "{dict_config.params_list}"
+    weight = {dict_config.weight}
+
+    params.checkpoint_dir = "{dict_config.model_dir}"
+    params.rdkit_2d_normalized = false
+
+    transform.type = "sigmoid"
+    transform.high = {dict_config.higher_bound}
+    transform.low = {dict_config.lower_bound}
+    transform.k = 0.4
+    """
+            return stage_parameters + component_parameters
+
+        for i in range(self.components[component]):
             dict_config = model_params_chemprop(
                 self.cfg.stage_comp.model_params_chemprop, i
             )
-            stage1_parameters = self.add_chempropFormed(
+            stage1_parameters = _add_chempropFormed(
                 stage1_parameters,
-                dict_config.model_dir,
-                dict_config.params_list,
-                dict_config.weight,
-                dict_config.higher_bound,
-                dict_config.lower_bound,
-                dict_config.scoring_function,
+                dict_config,
             )
+        return stage1_parameters
+
+    def _generate_extra(self, stage1_parameters):
         if self.cfg.reinvent_common.include_rdkit_requirements:
             stage1_parameters = self.add_stage_component_rdkit_requirement(
                 stage1_parameters,
@@ -92,7 +190,9 @@ class InputGenerator:
 
         if self.cfg.reinvent_common.include_SA_score:
             stage1_parameters = self.add_SA_filter(stage1_parameters)
+        return stage1_parameters
 
+    def _generate_diversity(self, stage1_parameters):
         if self.cfg.reinvent_common.ngram_filter.include:
             stage1_parameters = self.add_ngram_filter(stage1_parameters)
             stage1_parameters = self.add_ngram_filter_params(stage1_parameters)
@@ -114,6 +214,13 @@ class InputGenerator:
             stage1_parameters = self.add_scaffold_filter(
                 stage1_parameters,
             )
+        return stage1_parameters
+
+    def generate_input(self):
+        stage1_parameters = self.get_reinvent_sampling_config()
+        stage1_parameters = self._generate_staged_components(stage1_parameters)
+        stage1_parameters = self._generate_extra(stage1_parameters)
+        stage1_parameters = self._generate_diversity(stage1_parameters)
         with Path(self.wd + "/stage1.toml").open("w") as f:
             f.write(stage1_parameters)
         return stage1_parameters
@@ -133,6 +240,22 @@ class InputGenerator:
             raise ValueError(
                 "Length of list_of_properties, higher_bound and lower_bound must be equal"
             )
+
+    # def add_stage_component_rdkit_physchem(
+    #     self, stage_parameters, dict_config
+    # ):  # stage.scoring.component.FairChemG
+    #     component_parameters = f"""
+    # [[stage.scoring.component]]
+
+    # [[stage.scoring.component.{dict_config.property_name}.endpoint]]
+    # name = "{dict_config.property_name}"
+    # weight = {dict_config.weight}
+
+    # params.property_name = "{dict_config.property_name}"
+    # params.lower_bound = {dict_config.lower_bound}
+    # params.upper_bound = {dict_config.upper_bound}
+    #     """
+    #     return stage_parameters + component_parameters
 
     def get_reinvent_sampling_config_only(self):
         stage1_parameters = f"""
@@ -188,29 +311,6 @@ class InputGenerator:
         """
         return stage1_parameters
 
-    def add_stage_component(
-        self, stage_parameters, first_time, last_time, dict_config
-    ):  # stage.scoring.component.FairChemG
-        component_parameters = f"""
-    [[stage.scoring.component]]
-
-    [[stage.scoring.component.{dict_config.scoring_function}.endpoint]] 
-    name = "FairChem_{dict_config.property_name}"
-    weight = 0.6
-
-
-    params.property_name = "{dict_config.property_name}"
-    params.model = "{dict_config.model_name}"
-    params.lower_bound = {dict_config.lower_bound}
-    params.upper_bound = {dict_config.upper_bound}
-    params.model_dir = "{dict_config.model_dir}"
-    params.first_time = {first_time}
-    params.last_time = {last_time}
-
-
-        """
-        return stage_parameters + component_parameters
-
     def add_Mw_filter(self, stage_parameters):
         component_parameters = """
     [[stage.scoring.component]]
@@ -246,53 +346,6 @@ class InputGenerator:
     transform.low = 1
     transform.k = 0.4
     """
-        return stage_parameters + component_parameters
-
-    def add_chempropFormed(
-        self,
-        stage_parameters,
-        model_checkpoint_dir,
-        name,
-        weight,
-        normhigh,
-        normlow,
-        scoring_function,
-    ):
-        component_parameters = f"""
-    [[stage.scoring.component]]
-
-    [[stage.scoring.component.{scoring_function}.endpoint]] 
-    name = "{name}"
-    weight = {weight}
-
-    params.checkpoint_dir = "{model_checkpoint_dir}"
-    params.rdkit_2d_normalized = false
-
-    transform.type = "sigmoid"
-    transform.high = {normhigh}
-    transform.low = {normlow}
-    transform.k = 0.4
-    """
-        return stage_parameters + component_parameters
-
-    def add_stage_component_rdkit_requirement(
-        self,
-        stage_parameters,
-        max_number_of_rings,
-        max_num_atoms,
-        max_ring_size,
-    ):  # stage.scoring.component.rdkit_requirement
-        component_parameters = f"""
-    [[stage.scoring.component]]
-
-    [[stage.scoring.component.rdkit_requirement.endpoint]]
-    name = "rdkit_requirement"
-    weight = 0.6
-
-    params.max_number_of_rings = {max_number_of_rings}
-    params.max_num_atoms = {max_num_atoms}
-    params.max_ring_size = {max_ring_size}
-        """
         return stage_parameters + component_parameters
 
     def add_stage_component_scaffoldscore(self, stage_parameters, checkpoints):

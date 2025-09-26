@@ -18,4 +18,5 @@ reinvent_runs/TL/output/*
 .dev
 outputs
 tests/test_data/default/scorer_output/*
+example_other_cases/*
 # Jupyter Notebook checkpoints
