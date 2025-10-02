@@ -11,7 +11,8 @@ examples/results*/*
 outputs/*
 figures/*
 nohup.out
-reinvent_runs/TL/output/*
+reinvent_runs/*
+examples/*
 
 # dev folder
 .dev/*
