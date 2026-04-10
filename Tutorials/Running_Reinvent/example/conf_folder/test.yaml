@@ -1,0 +1,12 @@
+wd: "/home/pregabalin/RF/REINVENT4/NaviDiv/Tutorials/Running_Reinvent/example/runs/test_run"
+name: "stage1"
+generate_input_only: false
+input_generator: 
+  file_path: "/home/pregabalin/RF/REINVENT4/NaviDiv/Tutorials/Running_Reinvent/example/InputGenerator_custom.py"
+  class_name: "InputGeneratorCustom"
+
+defaults:
+  - _self_
+  - diversity_scorer: 1_default
+  - reinvent_common: default
+  - stage_comp: QED
