@@ -162,11 +162,21 @@ Citation
 
 If you use NaviDiv in your research, please cite:
 
+Mohammed Azzouzi, Thanapat Worakul, and Clémence Corminboeuf. **NaviDiv: a web app for monitoring chemical diversity in generative molecular design.** *Digital Discovery*, 2026. DOI: `10.1039/D5DD00487J <https://doi.org/10.1039/D5DD00487J>`_
+
 .. code-block:: bibtex
 
-   Comming soon
+   @article{azzouzi2026navidiv,
+     author  = {Azzouzi, Mohammed and Worakul, Thanapat and Corminboeuf, Cl{\'e}mence},
+     title   = {NaviDiv: a web app for monitoring chemical diversity in generative molecular design},
+     journal = {Digital Discovery},
+     year    = {2026},
+     doi     = {10.1039/D5DD00487J},
+     url     = {https://doi.org/10.1039/D5DD00487J},
+     note    = {Advance Article}
+   }
 
-**Data Availability**: The framework is freely available on GitHub at https://github.com/mohammedazzouzi15/Navi_diversity.
+**Data Availability**: The framework is freely available on GitHub at https://github.com/mohammedazzouzi15/NaviDiv.
 
 Documentation
 -------------
