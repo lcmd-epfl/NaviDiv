@@ -1,0 +1,3 @@
+Custom alert customalertsngrams updated with fragments: ['COc1ccccc1'] at step 30
+Custom alert customalertsngrams updated with fragments: ['(=O)(c1ccc', '(c1ccccc1)', ')(c1ccccc1', '=O)(c1cccc', '=S(=O)(c1c', 'COc1ccccc1', 'O)(c1ccccc', 'O=S(=O)(c1', 'S(=O)(c1cc', 'c1ccccc1)C'] at step 60
+Custom alert customalertsngrams updated with fragments: ['(=O)(c1ccc', '(c1ccccc1)', ')(c1ccccc1', '=O)(c1cccc', '=S(=O)(c1c', 'COc1ccc(C2', 'COc1ccccc1', 'O)(c1ccccc', 'O=S(=O)(c1', 'S(=O)(c1cc', 'c1ccccc1)C'] at step 90

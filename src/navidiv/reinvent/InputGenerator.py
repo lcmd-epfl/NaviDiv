@@ -307,7 +307,7 @@ class InputGenerator:
     [stage.scoring]
 
     type = "geometric_mean"  # or arithmetic_mean
-    parallel = false  # do not run scoring components in parallel
+    parallel = 1  # number of parallel workers for scoring (1 = no parallelism)
         """
         return stage1_parameters
 

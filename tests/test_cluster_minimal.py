@@ -5,6 +5,7 @@ This script demonstrates how to use the ClusterSimScorer with SMILES data
 from the test data file and shows different clustering methods.
 """
 
+import os
 import sys
 from pathlib import Path
 
@@ -185,7 +186,9 @@ def test_with_real_data(clustering_method="threshold", **cluster_args):
     print("=" * 60)
 
     # Load SMILES from the test data file
-    csv_path = "/media/mohammed/Work/Navi_diversity/tests/test_data/default/default_1_TSNE.csv"
+    csv_path = os.path.join(
+        os.path.dirname(__file__), "test_data", "default", "default_1_TSNE.csv"
+    )
     smiles_list = load_test_smiles(csv_path, max_molecules=800, step=100)
 
     if not smiles_list:

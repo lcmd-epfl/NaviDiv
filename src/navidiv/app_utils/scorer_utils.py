@@ -325,7 +325,7 @@ def get_scorer_properties_ui(scorer_name):
         )
         props["reference_csv"] = col2.text_input(
             "Reference CSV path",
-            value="/media/mohammed/Work/Navi_diversity/examples/df_original.csv",
+            value="",
             help="Path to the reference CSV file containing the smiles of the molecules to compare the results to",
         )
     if (

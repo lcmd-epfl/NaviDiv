@@ -4,27 +4,46 @@ from __future__ import annotations
 
 import logging
 import os
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, List, Optional
 
 import torch
 from reinvent.utils import CsvFormatter, config_parse, setup_logger
 from reinvent.runmodes import RL, Handler, create_adapter
-from reinvent.runmodes.RL import memories, terminators
+from reinvent.runmodes.RL import memories
+from reinvent.runmodes.RL.setup import terminators
 from reinvent.runmodes.RL.data_classes import ModelState, WorkPackage
-from reinvent.runmodes.RL.validation import RLConfig
+from reinvent.runmodes.RL import validation as rl_validation
 from reinvent.runmodes.setup_sampler import setup_sampler
 from reinvent.runmodes.utils import disable_gradients
 from reinvent.scoring import Scorer
 from navidiv.reinvent.reinvent3 import Reinvent3Learning
+from pydantic import ConfigDict
+
+
+# Monkey-patch RLConfig and its components to allow extra parameters from NaviDiv configs
+# In Pydantic v2, we need to rebuild the model or redefine it to change model_config effectively
+class SectionParameters(rl_validation.SectionParameters):
+    model_config = ConfigDict(extra="allow", protected_namespaces=())
+
+class SectionDiversityFilter(rl_validation.SectionDiversityFilter):
+    model_config = ConfigDict(extra="allow", protected_namespaces=())
+
+class SectionStage(rl_validation.SectionStage):
+    model_config = ConfigDict(extra="allow", protected_namespaces=())
+    diversity_filter: Optional[SectionDiversityFilter] = None
+
+class RLConfig(rl_validation.RLConfig):
+    model_config = ConfigDict(extra="allow", protected_namespaces=())
+    parameters: SectionParameters
+    stage: List[SectionStage]
+    diversity_filter: Optional[SectionDiversityFilter] = None
 
 if TYPE_CHECKING:
     from reinvent.models import ModelAdapter
-    from reinvent.runmodes.RL import terminator_callable
+    from reinvent.runmodes.RL.setup.terminators import terminator_callable
     from reinvent.runmodes.RL.validation import (
-        SectionDiversityFilter,
         SectionInception,
         SectionLearningStrategy,
-        SectionStage,
     )
 
 logger = logging.getLogger(__name__)
@@ -103,7 +122,6 @@ def setup_inception(config: SectionInception, prior: ModelAdapter):
     :return: the set up inception memory or None
     """
     smilies = []
-    deduplicate = config.deduplicate
     smilies_filename = config.smiles_file
 
     if smilies_filename and os.path.exists(smilies_filename):
@@ -118,16 +136,12 @@ def setup_inception(config: SectionInception, prior: ModelAdapter):
     if not smilies:
         logger.info("No SMILES for inception. Populating from first sampled batch.")
 
-    if deduplicate:
-        logger.info("Global SMILES deduplication for inception memory")
-
     inception = memories.Inception(
         memory_size=config.memory_size,
         sample_size=config.sample_size,
-        smilies=smilies,
+        seed_smilies=smilies,
         scoring_function=None,
         prior=prior,
-        deduplicate=deduplicate,
     )
 
     logger.info("Using inception memory")

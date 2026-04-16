@@ -129,9 +129,17 @@ def get_fragment_not_in_scaffolds(mol, scaffolds):
 
 
 if __name__ == "__main__":
-    # Example: use a few molecules
-    csv_file = "/media/mohammed/Work/Navi_diversity/reinvent_runs/runs/test/no_filter_high_sigma/stage0_1_TSNE.csv"  # /media/mohammed/Work/Navi_diversity/reinvent_runs/runs/tests/test4/stage0/stage0_1_TSNE.csv"
-    # "/media/mohammed/Work/Navi_diversity/reinvent_runs/runs/tests/test2/stage0/results/clusters/groupby_results_clusters.csv"
+    import argparse
+
+    parser = argparse.ArgumentParser(
+        description="Test fragmentation network on a SMILES CSV."
+    )
+    parser.add_argument(
+        "csv_file",
+        help="Path to input CSV file with a SMILES column and a 'step' column",
+    )
+    args = parser.parse_args()
+    csv_file = args.csv_file
     df = pd.read_csv(csv_file).sample(frac=1).reset_index(drop=True)
     df = df[df["step"] == 920]
     print("columns", df.columns)

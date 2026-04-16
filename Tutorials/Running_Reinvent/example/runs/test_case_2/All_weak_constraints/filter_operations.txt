@@ -1,0 +1,4 @@
+Custom alert customalerts updated with fragments: ['COc1ccccc1'] at step 40
+Custom alert customalerts updated with fragments: ['*c1ccccc1*', 'COc1ccccc1', 'O=Cc1ccccc1'] at step 60
+Custom alert customalerts updated with fragments: ['*c1ccccc1*', 'COc1ccccc1', 'NCc1ccccc1', 'O=Cc1ccccc1'] at step 80
+Custom alert customalertsngrams updated with fragments: ['(c2ccccc2)', 'c2ccccc2)C'] at step 90

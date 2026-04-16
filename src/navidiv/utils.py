@@ -174,12 +174,13 @@ def initialize_scorer(scorer_props: dict):
         from navidiv.simlarity import orginal_similarity_scorer
 
         # Use original smiles as reference if available
-        df_original = pd.read_csv(
-            scorer_props.get(
-                "reference_csv",
-                "/media/mohammed/Work/Navi_diversity/examples/df_original.csv",
+        reference_csv = scorer_props.get("reference_csv")
+        if not reference_csv:
+            raise ValueError(
+                "The 'Original' scorer requires 'reference_csv' "
+                "in the scorer properties."
             )
-        )
+        df_original = pd.read_csv(reference_csv)
         smiles_list_to_compare_to = df_original[
             get_smiles_column(df_original)
         ].tolist()

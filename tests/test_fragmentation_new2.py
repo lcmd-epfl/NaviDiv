@@ -45,7 +45,9 @@ def test_fragment_scorer():
     ]:
         frag_score = fragment_scorer.FragmentScorer(
             min_count_fragments=1,
-            output_path="/media/mohammed/Work/Navi_diversity/tests/resultstests/",
+            output_path=os.path.join(
+                os.path.dirname(__file__), "tmp", "resultstests"
+            ),
         )
         frag_score.update_transformation_mode(transformation_mode)
         start = time.time()

@@ -54,9 +54,20 @@ def get_smiles_column(df):
 
 
 def main():
-    # Example usage
+    import argparse
 
-    csv_path = "/media/mohammed/Work/Navi_diversity/tests/clusters/scorer_output/clusters/groupby_results_aggregated_clusters.csv"
+    parser = argparse.ArgumentParser(
+        description="Test inter-cluster molecule similarity."
+    )
+    parser.add_argument(
+        "csv_path",
+        help=(
+            "Path to aggregated cluster CSV "
+            "(e.g. groupby_results_aggregated_clusters.csv)"
+        ),
+    )
+    args = parser.parse_args()
+    csv_path = args.csv_path
 
     df_smiles = pd.read_csv(csv_path)  # .sample(10000, random_state=42)
     print(df_smiles.columns)

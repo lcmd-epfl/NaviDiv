@@ -1,0 +1,101 @@
+
+    run_type = "staged_learning"
+    device = "cuda:0"
+    json_out_config = "_stage1.json"
+
+    [parameters]
+
+    prior_file = "/home/pregabalin/RF/REINVENT4/NaviDiv/Tutorials/Running_Reinvent/example/priors/formed.prior"
+    agent_file = "/home/pregabalin/RF/REINVENT4/NaviDiv/Tutorials/Running_Reinvent/example/priors/formed.prior"
+    avoid_file = "[]"
+    check_diversity = "True"
+    check_diverisity_every = 30
+
+    summary_csv_prefix = "ngram_only"
+
+    batch_size = 128
+
+    use_checkpoint = true
+
+    [learning_strategy]
+
+    type = "dap"
+    sigma = "64"
+    rate = "0.001"
+
+
+    [[stage]]
+
+    max_score = 1.0
+    max_steps = 100
+
+    chkpt_file = "ngram_only.chkpt"
+
+    [stage.scoring]
+
+    type = "geometric_mean"  # or arithmetic_mean
+    parallel = 1  # number of parallel workers for scoring (1 = no parallelism)
+        
+        [[stage.scoring.component]]
+
+        [[stage.scoring.component.QED.endpoint]] 
+        name = "QED"
+        weight = 1.0
+
+
+        params.property_name = "QED"
+            
+    [[stage.scoring.component]]
+    [stage.scoring.component.custom_alerts_ngrams]
+    [[stage.scoring.component.custom_alerts_ngrams.endpoint]]
+    name = "custom alerts ngrams"
+    weight = 1
+    params.frag = []
+    
+    [ngram_filter]
+
+    ngram_size = 10
+    min_count_ngram_ratio = 0.1
+    
+    [diversity_filter]
+
+    type = "IdenticalMurckoScaffold"
+    bucket_size = 1000
+    minscore = 0.1
+    
+    [inception]
+
+    smiles_file = ""  # no seed SMILES
+    memory_size = 500
+    sample_size = 10
+    
+    [fragment_filter]
+
+    min_count_fragments = 10
+    diff_median_score_limit = 0.1
+    [[stage.scoring.component]]
+    [stage.scoring.component.custom_alerts]
+    [[stage.scoring.component.custom_alerts.endpoint]]
+    name = "custom alerts"
+    weight = 1
+    params.frag = [
+    "[#6;R0]~[#6;R0]",
+]
+    [[stage.scoring.component]]
+    [stage.scoring.component.dissimilarity]
+    [[stage.scoring.component.dissimilarity.endpoint]]
+
+    name = "dissimilarity"
+    weight = 1
+    params.threshold = 0.2
+    params.frag = [
+    "CCCCCCCCCCCCCCC",
+]
+    [[stage.scoring.component]]
+    [stage.scoring.component.custom_alerts_scaffold]
+    [[stage.scoring.component.custom_alerts_scaffold.endpoint]]
+    name = "custom alerts scaffold"
+    weight = 1
+    params.frag = []
+    params.type = "csk_bm"
+    

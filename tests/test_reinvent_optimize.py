@@ -1,6 +1,7 @@
 
-
+import argparse
 import logging
+import os
 
 from navidiv.reinvent.reinvent_test import reinvent_test
 
@@ -8,14 +9,27 @@ if __name__ == "__main__":
     # Set up logging to see outputs from the class
     logging.basicConfig(level=logging.INFO)
 
-    # Path to your test CSV file (adjust as needed)
-    csv_file = "/media/mohammed/Work/Navi_diversity/examples/stage0_1.csv"
+    parser = argparse.ArgumentParser(
+        description="Test reinvent optimizer with diversity scorers."
+    )
+    parser.add_argument(
+        "csv_file",
+        help="Path to input CSV file with SMILES (e.g. stage0_1.csv)",
+    )
+    parser.add_argument(
+        "--output_path",
+        default=os.path.join(os.path.dirname(__file__), "tmp", "results"),
+        help="Directory for scorer output files (default: tests/tmp/results)",
+    )
+    args = parser.parse_args()
+
+    output_path = args.output_path
     scorer_dicts = [
         {
             "prop_dict": {
                 "scorer_name": "Scaffold",
                 "scaffold_type": "csk_bm",
-                "output_path": "/media/mohammed/Work/Navi_diversity/examples/results/tmp/",
+                "output_path": output_path,
                 "min_count_fragments": 1,
                 "selectrion_criteria": {
                     "Count_perc_per_molecule": 10,
@@ -35,7 +49,7 @@ if __name__ == "__main__":
             "prop_dict": {
                 "scorer_name": "Ngram",
                 "ngram_size": 10,
-                "output_path": "/media/mohammed/Work/Navi_diversity/examples/results/tmp/",
+                "output_path": output_path,
                 "min_count_fragments": 5,
                 "selectrion_criteria": {
                     "Count_perc_per_molecule": 10,
@@ -55,7 +69,7 @@ if __name__ == "__main__":
             "prop_dict": {
                 "scorer_name": "Cluster",
                 "threshold": 0.25,
-                "output_path": "/media/mohammed/Work/Navi_diversity/examples/results/tmp/",
+                "output_path": output_path,
                 "min_count_fragments": 0,
                 "selectrion_criteria": {
                     "Count_perc_per_molecule": 10,
@@ -75,7 +89,7 @@ if __name__ == "__main__":
             "prop_dict": {
                 "scorer_name": "Fragments",
                 "min_count_fragments": 2,
-                "output_path": "/media/mohammed/Work/Navi_diversity/examples/results/tmp/",
+                "output_path": output_path,
                 "selectrion_criteria": {
                     "Count_perc_per_molecule": 10,
                     "Count_perc": 0.1,
@@ -92,7 +106,7 @@ if __name__ == "__main__":
         },
     ]
     # Instantiate the class
-    test_instance = reinvent_test(csv_file, scorer_dicts=scorer_dicts)
+    test_instance = reinvent_test(args.csv_file, scorer_dicts=scorer_dicts)
     # Run the optimize method
     test_instance.optimize()
 

@@ -6,8 +6,20 @@ from pathlib import Path
 
 import hydra
 import torch
+import yaml
 from omegaconf import DictConfig
 from reinvent.utils import config_parse, setup_logger
+
+# Fix REINVENT4's monkey-patch of yaml.load to be compatible with Hydra/OmegaConf
+# The original monkey-patch in reinvent.utils.config_parse uses 'loader' (lower case),
+# but OmegaConf calls it with 'Loader' (capital case).
+_original_monkey_load = yaml.load
+def _fixed_monkey_load(filehandle, loader=yaml.SafeLoader, **kwargs):
+    # If OmegaConf passes 'Loader', use it as 'loader' for the monkey-patched function
+    if 'Loader' in kwargs and 'loader' not in kwargs:
+        loader = kwargs.pop('Loader')
+    return _original_monkey_load(filehandle, loader=loader, **kwargs)
+yaml.load = _fixed_monkey_load
 
 from navidiv.reinvent import run_staged_learning_2
 from navidiv.reinvent.InputGenerator import InputGenerator
@@ -69,7 +81,7 @@ def _loadInputGeneratorFromFile(file_path: str, class_name: str):
 
 
 @hydra.main(
-    config_path="/media/mohammed/Work/Navi_diversity/reinvent_runs/conf_folder",
+    config_path=None,
     config_name="test",
     version_base="1.1",  # Explicitly specify the compatibility version
 )
@@ -90,11 +102,26 @@ def main(cfg: DictConfig):
     print(cfg.diversity_scorer)
     os.chdir(input_generator.wd)
     input_generator.generate_input()
-    input_config = config_parse.read_toml(
+    input_config = config_parse.read_config(
         os.path.join(input_generator.wd, "stage1.toml"),
+        fmt="toml"
     )
 
-    device = "cuda" if torch.cuda.is_available() else "cpu"
+    # Detect device from the prior checkpoint to avoid device mismatch in reinvent4's RNN
+    # (reinvent4 bug: _embedding is not created on the target device, so forcing cuda
+    # causes a device mismatch when the prior was saved on cpu)
+    _prior_path = input_config.get("parameters", {}).get("prior_file", None)
+    if _prior_path and torch.cuda.is_available():
+        try:
+            _ckpt = torch.load(_prior_path, map_location="cpu", weights_only=False)
+            _net = _ckpt.get("network", {})
+            _sample_tensor = next(iter(_net.values())) if _net else None
+            _ckpt_device = str(_sample_tensor.device) if _sample_tensor is not None else "cpu"
+            device = "cuda" if "cuda" in _ckpt_device else "cpu"
+        except Exception:
+            device = "cuda" if torch.cuda.is_available() else "cpu"
+    else:
+        device = "cuda" if torch.cuda.is_available() else "cpu"
     logger = setup_logger(name="reinvent", filename="stage1.log")
     device = torch.device(device)
     seed = input_config.get("seed", None)

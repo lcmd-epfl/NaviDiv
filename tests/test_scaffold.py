@@ -1,13 +1,24 @@
 # Test cases for the scaffold functions in navidiv/Scaffold_scorer.py
 
+import os
+import pytest
+
 from rdkit import Chem
 from rdkit.Chem import Draw
 
 from navidiv.scaffold import (
-    Scaffold_GNN,
     Scaffold_scorer,
 )
 from navidiv.scaffold.Scaffold_scorer import get_scaffold
+
+# Try to import Scaffold_GNN, skip tests if FORMED_PROP is not available
+try:
+    from navidiv.scaffold import Scaffold_GNN
+    HAS_FORMED_PROP = True
+except ImportError:
+    HAS_FORMED_PROP = False
+
+_DEFAULT_OUTPUT = os.path.join(os.path.dirname(__file__), "tmp", "resultstests")
 
 
 def plot_scaffolds(scaffolds_dict, filename="scaffolds.png"):
@@ -32,10 +43,11 @@ def plot_scaffolds(scaffolds_dict, filename="scaffolds.png"):
         print(f"Scaffolds plot saved to {filename}")
 
 
+@pytest.mark.skipif(not HAS_FORMED_PROP, reason="FORMED_PROP not installed")
 def test_get_scaffold_gnn_scorer():
     """Test the Scaffold GNN scorer."""
     scaffold_gnn_score = Scaffold_GNN.ScaffoldGNNScorer(
-        output_path="/media/mohammed/Work/Navi_diversity/tests/resultstests/",
+        output_path=_DEFAULT_OUTPUT,
     )
     scaffold_gnn_score._min_count_fragments = 0
     smiles = "O=C1NC(=O)N(c2ccccc2)C1=C1c2cc(Cl)ccc2C(c2ccccc2Cl)=N1"
@@ -53,10 +65,11 @@ def test_get_scaffold_gnn_scorer():
     plot_scaffolds(scaffolds_dict, filename="tests/scaffolds_test_GNN.png")
 
 
+@pytest.mark.skipif(not HAS_FORMED_PROP, reason="FORMED_PROP not installed")
 def test_get_scaffold_gnn_scorer_target():
     """Test the Scaffold GNN scorer."""
     scaffold_gnn_score = Scaffold_GNN.ScaffoldGNNScorer(
-        output_path="/media/mohammed/Work/Navi_diversity/tests/resultstests/",
+        output_path=_DEFAULT_OUTPUT,
     )
     scaffold_gnn_score._min_count_fragments = 0
     scaffold_gnn_score.threshold = 0.9
@@ -95,7 +108,7 @@ def test_get_scaffold_returns_murcko_scaffold():
     }
     for case in cases:
         scaffold_score = Scaffold_scorer.Scaffold_scorer(
-            output_path="/media/mohammed/Work/Navi_diversity/tests/resultstests/",
+            output_path=_DEFAULT_OUTPUT,
             scaffold_type=case,
         )
         scaff = scaffold_score.get_scaffold(smiles)

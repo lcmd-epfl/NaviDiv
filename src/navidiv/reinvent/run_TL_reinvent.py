@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 
 
 @hydra.main(
-    config_path="/media/mohammed/Work/Navi_diversity/reinvent_runs/conf_folder",
+    config_path=None,
     config_name="transfer_learning",
     version_base="1.1",  # Explicitly specify the compatibility version
 )

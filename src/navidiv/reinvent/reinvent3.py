@@ -20,7 +20,8 @@ import pandas as pd
 
 if TYPE_CHECKING:
     from reinvent.runmodes.samplers import Sampler
-    from reinvent.runmodes.RL import RLReward, terminator_callable
+    from reinvent.runmodes.RL import RLReward
+    from reinvent.runmodes.RL.setup.terminators import terminator_callable
     from reinvent.runmodes.RL.memories import Inception
     from reinvent.models import ModelAdapter
     from reinvent.scoring import Scorer, ScoreResults
@@ -222,17 +223,17 @@ class Reinvent3Learning(Learning):
 
         agent_nlls = self._state.agent.likelihood_smiles(self.sampled.items2)
         prior_nlls = self.prior.likelihood_smiles(self.sampled.items2)
-        if self.avoid is not None:
-            avoid_nlls = [x.likelihood_smiles(self.sampled.items2) for x in self.avoid]
+        scores = results.total_scores
+        if isinstance(scores, torch.Tensor):
+            scores = scores.detach().cpu().numpy()
         return self.reward_nlls(
-            agent_nlls,  # agent NLL
-            prior_nlls,  # prior NLL
-            results.total_scores,
-            self.inception,
             results.smilies,
-            self._state.agent,
+            scores,
+            agent_nlls,
+            prior_nlls,
             np.argwhere(self.sampled.states == SmilesState.VALID).flatten(),
-            avoid_nlls=avoid_nlls,
+            self.inception,
+            self._state.agent,
         )
 
     def optimize(self, converged: terminator_callable) -> bool:
@@ -251,7 +252,7 @@ class Reinvent3Learning(Learning):
         self.initialize_scorer()
 
         for step in range(self.max_steps):
-            self.sampled = self.sampling_model.sample(self.seed_smilies)
+            self.sampled = self.sampling_model.sample(self.input_smilies)
             self.invalid_mask = np.where(
                 self.sampled.states == SmilesState.INVALID, False, True
             )

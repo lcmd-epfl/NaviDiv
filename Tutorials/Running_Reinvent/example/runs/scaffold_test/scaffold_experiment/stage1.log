@@ -1,0 +1,146 @@
+08:07:55 <WARN> /home/pregabalin/RF/REINVENT4/NaviDiv/Tutorials/Running_Reinvent/example/priors/formed.prior does not contain metadata
+08:07:55 <INFO> Number of network parameters: 5,886,347
+08:07:55 <INFO> Network architecture:
+RNN(
+  (_embedding): Embedding(139, 256)
+  (_rnn): LSTM(256, 512, num_layers=3, batch_first=True)
+  (_linear): Linear(in_features=512, out_features=139, bias=True)
+)
+08:07:55 <WARN> /home/pregabalin/RF/REINVENT4/NaviDiv/Tutorials/Running_Reinvent/example/priors/formed.prior does not contain metadata
+08:07:55 <INFO> Number of network parameters: 5,886,347
+08:07:55 <INFO> Network architecture:
+RNN(
+  (_embedding): Embedding(139, 256)
+  (_rnn): LSTM(256, 512, num_layers=3, batch_first=True)
+  (_linear): Linear(in_features=512, out_features=139, bias=True)
+)
+08:07:55 <INFO> Registered scoring component CustomAlerts
+08:07:55 <INFO> Registered scoring component CustomAlertsNgrams
+08:07:55 <INFO> Registered scoring component CustomAlertsScaffold
+08:07:55 <INFO> Registered scoring component Dissimilarity
+08:07:55 <ERRO> Component reinvent_plugins.components.comp_fairchem could not be imported: No module named 'FORMED_PROP'
+08:07:55 <ERRO> Component reinvent_plugins.components.comp_fairchemG could not be imported: No module named 'FORMED_PROP'
+08:07:55 <ERRO> Component reinvent_plugins.components.comp_fairchem_S1_T1 could not be imported: No module named 'FORMED_PROP'
+08:07:55 <INFO> Registered scoring component rdkitrequirement
+08:07:55 <ERRO> Component reinvent_plugins.components.comp_scaffoldscore could not be imported: No module named 'FORMED_PROP'
+08:07:56 <INFO> Registered scoring component ChemPropFORMED
+08:07:56 <INFO> Registered scoring component ChemPropFORMEDT1T2
+08:07:56 <INFO> Registered scoring component ChemPropFORMEDSTI
+08:07:56 <INFO> Registered scoring component RotRingBond
+08:07:56 <INFO> Registered scoring component CountRings
+08:07:56 <INFO> Registered scoring component ROCSSimilarity
+08:07:56 <INFO> Registered scoring component GroupCount
+08:07:56 <INFO> Registered scoring component FragmentQed
+08:07:56 <INFO> Registered scoring component FragmentSlogP
+08:07:56 <INFO> Registered scoring component FragmentMolecularWeight
+08:07:56 <INFO> Registered scoring component FragmentTPSA
+08:07:56 <INFO> Registered scoring component FragmentDistanceMatrix
+08:07:56 <INFO> Registered scoring component FragmentNumAtomStereoCenters
+08:07:56 <INFO> Registered scoring component FragmentHBondAcceptors
+08:07:56 <INFO> Registered scoring component FragmentHBondDonors
+08:07:56 <INFO> Registered scoring component FragmentNumRotBond
+08:07:56 <INFO> Registered scoring component FragmentCsp3
+08:07:56 <INFO> Registered scoring component Fragmentnumsp
+08:07:56 <INFO> Registered scoring component Fragmentnumsp2
+08:07:56 <INFO> Registered scoring component Fragmentnumsp3
+08:07:56 <INFO> Registered scoring component FragmentEffectiveLength
+08:07:56 <INFO> Registered scoring component FragmentGraphLength
+08:07:56 <INFO> Registered scoring component FragmentLengthRatio
+08:07:56 <INFO> Registered scoring component FragmentNumHeavyAtoms
+08:07:56 <INFO> Registered scoring component FragmentNumHeteroAtoms
+08:07:56 <INFO> Registered scoring component FragmentNumRings
+08:07:56 <INFO> Registered scoring component FragmentNumAromaticRings
+08:07:56 <INFO> Registered scoring component FragmentNumAliphaticRings
+08:07:56 <INFO> Registered scoring component FragmentSlogP
+08:07:56 <INFO> Registered scoring component MatchingSubstructure
+08:07:56 <INFO> Registered scoring component MolVolume
+08:07:56 <INFO> Registered scoring component Qed
+08:07:56 <INFO> Registered scoring component LargestRingSize
+08:07:56 <INFO> Registered scoring component MolecularWeight
+08:07:56 <INFO> Registered scoring component GraphLength
+08:07:56 <INFO> Registered scoring component NumAtomStereoCenters
+08:07:56 <INFO> Registered scoring component HBondAcceptors
+08:07:56 <INFO> Registered scoring component HBondDonors
+08:07:56 <INFO> Registered scoring component NumRotBond
+08:07:56 <INFO> Registered scoring component Csp3
+08:07:56 <INFO> Registered scoring component numsp
+08:07:56 <INFO> Registered scoring component numsp2
+08:07:56 <INFO> Registered scoring component numsp3
+08:07:56 <INFO> Registered scoring component NumHeavyAtoms
+08:07:56 <INFO> Registered scoring component NumHeteroAtoms
+08:07:56 <INFO> Registered scoring component NumRings
+08:07:56 <INFO> Registered scoring component NumAromaticRings
+08:07:56 <INFO> Registered scoring component NumAliphaticRings
+08:07:56 <INFO> Registered scoring component SlogP
+08:07:56 <INFO> Registered scoring component LargestRingSize
+08:07:56 <INFO> Registered scoring component PMI
+08:07:56 <INFO> Registered scoring component RDKitDescriptors
+08:07:56 <INFO> Registered scoring component TanimotoSimilarity
+08:07:56 <INFO> Registered scoring component TanimotoDistance
+08:07:56 <INFO> Registered scoring component TPSA
+08:07:56 <INFO> Registered scoring component SAScore
+08:07:56 <INFO> Registered scoring component ChemProp
+08:07:56 <INFO> Registered scoring component ChempropEnsemble
+08:07:56 <INFO> Registered scoring component DockStream
+08:07:56 <INFO> Registered scoring component ExternalProcess
+08:07:56 <INFO> Registered scoring component REST
+08:07:56 <INFO> Registered scoring component Icolos
+08:07:56 <INFO> Registered scoring component MMP
+08:07:56 <INFO> Registered scoring component Qptuna
+08:07:56 <INFO> Registered scoring component ReactionFilter
+08:07:56 <INFO> Registered scoring component RingPrecedence
+08:07:56 <INFO> Registered scoring component Maize
+08:07:56 <INFO> Registered scoring component SynthSense
+08:07:56 <INFO> Registered scoring component CAZP
+08:07:56 <INFO> Creating scoring component QED
+08:07:56 <INFO> Creating filter component custom_alerts_ngrams
+08:07:56 <INFO> Creating filter component custom_alerts
+08:07:56 <INFO> Creating filter component dissimilarity
+08:07:56 <INFO> Creating filter component custom_alerts_scaffold
+08:07:56 <INFO> Scorer dicts: {'scorer_name': 'Scaffold', 'scaffold_type': 'basic_wire_frame', 'output_path': 'results/tmp/', 'min_count_fragments': 1, 'selection_criteria': {'diff_median_score': 0.1}}
+08:07:56 <INFO> Scorer dicts: {'scorer_name': 'Ngram', 'ngram_size': 10, 'output_path': 'results/tmp/', 'min_count_fragments': 3}
+08:07:56 <INFO> Scorer dicts: {'scorer_name': 'Fragments', 'output_path': 'results/tmp/', 'min_count_fragments': 2, 'transformation_mode': 'none'}
+08:07:56 <INFO> Scorer dicts: {'scorer_name': 'Cluster', 'output_path': 'results/tmp/', 'threshold': 0.25, 'min_count_fragments': 0}
+08:07:57 <INFO> Sampled SMILES n1c(C)c(=C(C=c2[nH]c(=C([O-])C)c(=C(OC)[O-])[s+]2)c2[s+]c(C)c(C)s2)sc1C failed to sanitize.
+08:07:57 <INFO> Sampled SMILES N(c1c(C)n(C)n(-c2ccccc2)c1=O)=c1n(CC)nnn1 failed to sanitize.
+08:07:57 <INFO> Sampled SMILES [cH+]1[c-](C23C4([O-])C2([O-])C43[C+](C)[C+](C(C)C)[O-])[cH+][c-]2[cH+][cH-][cH+][cH-]1o2 failed to sanitize.
+08:07:57 <INFO> Sampled SMILES O=C(Nc1c([Si](C)(C)c2ccc(C(=O)Nc3c(C(Nc4c(C(=O)NC5C(C(Nc6c(C(C)C)cc(C(C)C)cc(C(C)C)c6)=O)CCCCC5)c(C(N(C(C)C)C(C)C)=O)cc(C(=S)N(C(C)C)C(C)C)=O)c4)cc(C(N(C(C)C)C(C)C)=O)c3)cc2)cc(C(F)(F)F)cc1C(F)(F)F)C(C(F)(F)F)(F)F failed to sanitize.
+08:07:57 <INFO> Sampled SMILES c1c(N=Cc2ccc3c(c4ccccc4o3)cc2)ccc(C)c1 failed to sanitize.
+08:07:57 <INFO> Sampled SMILES c12ccc(C)cc1c(C(=O)C)c(=O)oc1ccccc1[nH]2 failed to sanitize.
+08:07:57 <INFO> Sampled SMILES c12c3c(Cc4c5c(n(C)c4)cccc5)c(=O)oc1cccc2ccc3 failed to sanitize.
+08:07:57 <INFO> Sampled SMILES C[Si](C)(C)CC[B-2]12([B-2]34(N(C(C)(C)C)[B-2]2(Br)(Br)N3C(C)(C)C)N2[C+](C(C)(C)C)C1([C-]1[C+](C)[CH-][C+](C)[CH-][C+]1C)C42[C-](C(C)(C)C)C[c+]1[cH-][cH+][cH-][cH+][cH-]1)C failed to sanitize.
+08:07:59 <INFO> Step 0 - Scorer: scaffold_basic_wire_frame - Score: {'Percentage of Unique Fragments': 79.83193277310924, 'Total Number of Fragments': 119, 'Number of Unique Fragments': 95, 'Elapsed Time': 1.3817248344421387, 'Elapsed Time_to get count': 1.0586051940917969, 'Appeared more than 10 times': 1, 'Appeared more than 5 times': 2, 'Appeared once': 86}
+08:07:59 <INFO> Updating custom alert customalertsscaffold with fragments: []
+08:07:59 <INFO> customalertsscaffold updated with set()
+08:07:59 <INFO> Step 0 - Scorer: ngrams_10 - Score: {'Percentage of Unique Fragments': 87.44561839651958, 'Total Number of Fragments': 4827, 'Number of Unique Fragments': 4221, 'Elapsed Time': 0.04255414009094238, 'Elapsed Time_to get count': 0.03154182434082031, 'Appeared more than 10 times': 2, 'Appeared more than 5 times': 25, 'Appeared once': 3873}
+08:07:59 <INFO> Updating custom alert customalertsngrams with fragments: []
+08:07:59 <INFO> customalertsngrams updated with set()
+08:08:04 <ERRO> Error processing step 0: Signal 2
+Traceback (most recent call last):
+  File "/home/pregabalin/RF/REINVENT4/NaviDiv/src/navidiv/reinvent/reinvent3.py", line 133, in run_scorer
+    scores_result = self.scorer.get_score(
+  File "/home/pregabalin/RF/REINVENT4/NaviDiv/src/navidiv/scorer.py", line 321, in get_score
+    self.get_count(smiles_list)
+  File "/home/pregabalin/RF/REINVENT4/NaviDiv/src/navidiv/fragment/fragment_scorer.py", line 73, in get_count
+    fragments, over_represented_fragments = self._from_list_to_count_df(
+  File "/home/pregabalin/RF/REINVENT4/NaviDiv/src/navidiv/scorer.py", line 380, in _from_list_to_count_df
+    ].apply(lambda x: self._count_pattern_occurrences(smiles_list, x))
+  File "/home/pregabalin/anaconda3/envs/reinvent4/lib/python3.10/site-packages/pandas/core/series.py", line 4924, in apply
+    ).apply()
+  File "/home/pregabalin/anaconda3/envs/reinvent4/lib/python3.10/site-packages/pandas/core/apply.py", line 1427, in apply
+    return self.apply_standard()
+  File "/home/pregabalin/anaconda3/envs/reinvent4/lib/python3.10/site-packages/pandas/core/apply.py", line 1507, in apply_standard
+    mapped = obj._map_values(
+  File "/home/pregabalin/anaconda3/envs/reinvent4/lib/python3.10/site-packages/pandas/core/base.py", line 921, in _map_values
+    return algorithms.map_array(arr, mapper, na_action=na_action, convert=convert)
+  File "/home/pregabalin/anaconda3/envs/reinvent4/lib/python3.10/site-packages/pandas/core/algorithms.py", line 1743, in map_array
+    return lib.map_infer(values, mapper, convert=convert)
+  File "lib.pyx", line 2972, in pandas._libs.lib.map_infer
+  File "/home/pregabalin/RF/REINVENT4/NaviDiv/src/navidiv/scorer.py", line 380, in <lambda>
+    ].apply(lambda x: self._count_pattern_occurrences(smiles_list, x))
+  File "/home/pregabalin/RF/REINVENT4/NaviDiv/src/navidiv/fragment/fragment_scorer.py", line 89, in _count_pattern_occurrences
+    mol = Chem.MolFromSmiles(smiles)
+  File "/home/pregabalin/anaconda3/envs/reinvent4/lib/python3.10/site-packages/reinvent/runmodes/handler.py", line 142, in _signal_handler
+    raise StageInterruptedUncontrolled(f"Signal {signum}")
+reinvent.runmodes.handler.StageInterruptedUncontrolled: Signal 2
+08:08:04 <CRIT> Received exception ('File results/tmp//fragments_none/fragments_none.csv does not exist. Please run the scorer first.'): saving checkpoint and then terminate

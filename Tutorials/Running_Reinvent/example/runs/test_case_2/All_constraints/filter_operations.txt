@@ -1,0 +1,22 @@
+Custom alert customalertsscaffold updated with fragments: ['C1CCCCC1'] at step 20
+Custom alert customalertsngrams updated with fragments: ['Cc2ccccc2)'] at step 30
+Custom alert customalertsscaffold updated with fragments: ['C1CCCCC1'] at step 40
+Custom alert customalerts updated with fragments: ['*c1ccc(*)cc1', 'COc1ccccc1'] at step 40
+Custom alert customalerts updated with fragments: ['*c1ccccc1*'] at step 0
+Custom alert customalertsscaffold updated with fragments: ['C1CCCCC1', 'CC1CCCCC1'] at step 20
+Custom alert customalerts updated with fragments: ['*c1ccccc1*'] at step 20
+Custom alert customalertsngrams updated with fragments: ['C(c2ccccc2', 'c1ccccc1)N', 'c2ccccc2)C'] at step 30
+Custom alert customalertsscaffold updated with fragments: ['C1CCCCC1', 'CC1CCCCC1'] at step 40
+Custom alert customalerts updated with fragments: ['*c1ccccc1*'] at step 40
+Custom alert customalertsscaffold updated with fragments: ['C1CCCCC1', 'CC1CCCCC1'] at step 60
+Custom alert customalertsngrams updated with fragments: ['(=O)(=O)N2', '(S(=O)(=O)', ')(=O)N2CCC', '1ccc(S(=O)', '=O)(=O)N2C', 'C(c2ccccc2', 'Cc1ccc(S(=', 'O)(=O)N2CC', 'S(=O)(=O)N', 'c(S(=O)(=O', 'c1ccc(S(=O', 'c1ccccc1)N', 'c2ccccc2)C', 'c2ccccn2)c', 'cc(S(=O)(=', 'ccc(S(=O)('] at step 60
+Custom alert customalerts updated with fragments: ['*c1ccc(*)cc1', '*c1ccccc1*', 'OCc1ccccc1'] at step 60
+Custom alert customalertsscaffold updated with fragments: ['C1CCCCC1', 'CC1CCCCC1'] at step 80
+Custom alert customalerts updated with fragments: ['*C1CCCCC1*', '*c1ccc(*)cc1', '*c1ccccc1*', 'OCc1ccccc1'] at step 80
+Custom alert customalerts updated with fragments: ['*c1ccccc1*', 'COc1ccccc1'] at step 20
+Custom alert customalerts updated with fragments: ['*c1ccccc1*', 'COc1ccccc1'] at step 40
+Custom alert customalertsngrams updated with fragments: ['(c2ccccc2)', 'C(c2ccccc2', 'c2ccccc2)C'] at step 60
+Custom alert customalerts updated with fragments: ['*c1ccc(*)cc1', '*c1ccccc1*', 'COc1ccccc1'] at step 60
+Custom alert customalertsscaffold updated with fragments: ['C1CCCCC1'] at step 80
+Custom alert customalerts updated with fragments: ['*c1ccc(*)cc1', '*c1ccccc1*', 'COc1ccccc1', 'NCc1ccccc1'] at step 80
+Custom alert customalertsngrams updated with fragments: ['(c2ccccc2)', 'C(c2ccccc2', 'c2ccccc2)C'] at step 90

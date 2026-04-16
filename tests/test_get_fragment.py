@@ -5,8 +5,7 @@ import pandas as pd
 from rdkit import Chem
 from rdkit.Chem import Draw
 
-from navidiv.fragment.utils.Mac_frag import MacFrag
-from navidiv.scorer import BaseScore
+from navidiv.fragment.utils_old.Mac_frag import MacFrag
 
 DIFF_MEDIAN_SCOR_LIMIT = 0.2
 MIN_COUNT_FRAGMENTS = 1
