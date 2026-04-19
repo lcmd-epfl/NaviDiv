@@ -182,11 +182,12 @@ def run_scorer(file_path):
                 step=1,
             )
         with col2:
+            max_increment = max(1, max_step - min_step)
             steps_increment = col2.number_input(
                 "Step increment",
                 min_value=1,
-                max_value=max_step - min_step,
-                value=10,
+                max_value=max_increment,
+                value=min(10, max_increment),
                 step=1,
             )
 
